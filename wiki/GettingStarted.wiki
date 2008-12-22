@@ -1,0 +1,15 @@
+#How to get up and running with t5-restful-webservices
+
+= Introduction =
+
+This Tapestry 5 contributed library enables services you write and define through the Tapestry 5 IoC to operate as RESTful web services.
+
+This is done by writing a Tapestry 5 services that implement the {{{RestfulWS}}} interface in this module.  You then contribute these services to this library's {{{RestfulWSDispatcher}}} service by adding a contributeRestfulWSDispatcher method to your application's T5 IoC module.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
