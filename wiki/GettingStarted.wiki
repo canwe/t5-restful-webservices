@@ -1,3 +1,4 @@
+#labels Featured,Phase-Implementation
 #How to get up and running with t5-restful-webservices
 
 = Introduction =
@@ -19,7 +20,7 @@ Just drop the source jar (t5-restful-webservices.jar) into the classpath for you
 
 You need to come up with a unique, _URL-friendly_ string id for your web service class.  The web service library will route URLs containing this id as the first URL path element (after the root context path) to be handled by your web service class' {{{serve}}} method and not pass on through to be handled by Tapestry 5's normal master dispatcher.
 
-Let's start an example.  Let's imagine that our Tapestry 5 web application is rooted at the URL {{{http://myapp.example.org/}}} -- i.e., the root context is "/" and that exact URL returns the root Index.java T5 page.  Now imagine we want a RESTful web service based at the url {{{http://myapp.example.org/foo1/}}} to take in two arguments and return some XML to the browser.  A runtime URL for that web service might then be {{{http://myapp.example.org/foo1/hello/world}}}.  Let's say we want that URL to return the following XML to the browser:
+Let's start an example.  Let's imagine that our Tapestry 5 web application is rooted at the URL {{{http://myapp.example.org/}}} -- i.e., the root context is "/" and that exact URL returns the root Index.java T5 page.  Now imagine we want a RESTful web service based at the url {{{http://myapp.example.org/foo1/}}} to take in two arguments and return some XML to the browser.  in this case "foo1" is the unique id, and a runtime URL for that web service might then be {{{http://myapp.example.org/foo1/hello/world}}}.  Let's say we want that URL to return the following XML to the browser:
 
 {{{
 <foo>
@@ -30,3 +31,49 @@ Let's start an example.  Let's imagine that our Tapestry 5 web application is ro
 
 
 In this instance, "foo1" is the unique string id for our RESTful web service, and because of the way we've planned out the URL for it, you need to make sure you not going to use the URL {{{http://myapp.example.org/foo1/}}} for anything else!  The web service {{{RequestFilter}}} will be trapping all those requests!
+
+==Write your Tapestry 5 IoC Service==
+
+Implementing the service is easy.  You don't really need to worry about writing an interface for the service, just write a class in your {{{<app-package>/services/impl}}} directory that implements the RestfulWS interface in this module.  That interface provides one method: {{{serve}}}.  Continuing our example, here's our FooService class:
+
+{{{
+...
+import us.antera.t5restfulws.services.RestfulWS;
+
+public class FooService implements RestfulWS
+{
+    public void serve (List<String> args, Request request, Response response)
+    {
+        try
+        {
+            PrintWriter writer = response.getPrintWriter("text/xml");
+            writer.append("<foo>");
+            writer.append("<arg1>" + args.get(1) + "</arg1>");
+            writer.append("<arg2>" + args.get(2) + "</arg2>");
+            writer.append("</foo>");
+        }
+        catch (IOException e)
+        {
+            // Do something interesting...
+        }
+    }
+}
+}}}
+
+As you can guess from this example, the first argument to {{{serve}}} is a list of the path elements in the runtime web service URL after the first one, which is the web service id.  In this case, that list has two elements.  The first is "hello".  The second, "world".
+
+The {{{Request}}} object is provided for your convenience mainly.  The {{{Response}}} object is needed to send the XML back to the browser.
+
+==Contribute your service to the RESTful web service module==
+
+In your application's IoC module, you need to contribute your service to the {{{RestfulWSDispatcher}}}.  The dispatcher takes a mapped configuration with the key for each service being its unique id.  With our example,
+
+{{{
+public void contributeRestfulWSDispatcher (MappedConfiguration<String, RestfulWS> config)
+{
+    config.add("foo1", new FooService());
+    // contribute others!
+}
+}}}
+
+Re
