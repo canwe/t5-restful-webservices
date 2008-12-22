@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>us.antera</groupId>
     <artifactId>t5-restful-webservices</artifactId>
-    <version>0.8.0</version>
+    <version>0.1.0</version>
     <packaging>jar</packaging>
     <name>Tapestry 5 Simple RESTful Web Services</name>
 
