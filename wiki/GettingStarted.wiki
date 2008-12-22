@@ -3,9 +3,9 @@
 
 = Introduction =
 
-This Tapestry 5 contributed library enables services you write and define through the Tapestry 5 IoC to operate as RESTful web services.
+This Tapestry 5 contributed library enables IoC services you write to handle RESTful web service requests.
 
-This is done by writing a Tapestry 5 services that implement the {{{RestfulWS}}} interface in this module and then contributing those services to this library's {{{RestfulWSDispatcher}}} service by adding a contributeRestfulWSDispatcher method to your application's T5 IoC module.
+This is done by implementing the {{{RestfulWS}}} interface in your service and then contributing your service to this library's {{{RestfulWSDispatcher}}}.
 
 {{{RestfulWSDispatcher}}} adds a {{{RequestFilter}}} to Tapestry 5's pipline to trap HTTP requests intended to be serviced by the RESTful web services that you configure.
 
