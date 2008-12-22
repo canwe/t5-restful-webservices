@@ -1,6 +1,7 @@
 package us.antera.t5restfulws.services;
 
 import org.apache.tapestry5.ioc.OrderedConfiguration;
+import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.Local;
 import org.apache.tapestry5.services.RequestFilter;
 import us.antera.t5restfulws.services.impl.RestfulWSDispatcher;
@@ -16,9 +17,9 @@ import java.util.Map;
  */
 public class T5RestfulWSModule
 {
-    public RequestFilter buildRestfulWSDispatcher (Map<String, RestfulWS> services)
+    public static void bind (ServiceBinder binder)
     {
-        return new RestfulWSDispatcher (services);
+        binder.bind (RestfulWSDispatcher.class);
     }
 
     public void contributeRequestHandler (OrderedConfiguration<RequestFilter> configuration,
