@@ -62,7 +62,7 @@ public class FooService implements RestfulWS
 
 As you can guess from this example, the first argument to {{{serve}}} are the arguments to the web service; i.e., a list of the path elements in the URL after the web service id.  In this case, that list is {{{[hello, world]}}}.
 
-The {{{Request}}} object is provided for your convenience mainly.  The {{{Response}}} object is needed to send the XML back to the browser.
+The {{{Request}}} and {{{Response}}} services are provided for your convenience.  You could, of course, inject those services yourself into your web service.
 
 ==Contribute your service to the RESTful web service module==
 
