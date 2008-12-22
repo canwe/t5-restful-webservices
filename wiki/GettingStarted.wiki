@@ -34,7 +34,7 @@ In this instance, "foo1" is the unique string id for our RESTful web service, an
 
 ==Write your Tapestry 5 IoC Service==
 
-Implementing the service is easy.  You don't really need to worry about writing an interface for the service, just write a class in your {{{<app-package>/services/impl}}} directory that implements the RestfulWS interface in this module.  That interface provides one method: {{{serve}}}.  Continuing our example, here's our FooService class:
+Implementing the service is easy.  Just write a class in your {{{<app-package>/services/impl}}} directory that implements the {{{RestfulWS}}} interface in this module.  That interface provides one method: {{{serve}}}.  Continuing our example, here's our {{{FooService}}} class:
 
 {{{
 ...
@@ -60,7 +60,7 @@ public class FooService implements RestfulWS
 }
 }}}
 
-As you can guess from this example, the first argument to {{{serve}}} is a list of the path elements in the runtime web service URL after the first one, which is the web service id.  In this case, that list has two elements.  The first is "hello".  The second, "world".
+As you can guess from this example, the first argument to {{{serve}}} are the arguments to the web service; i.e., a list of the path elements in the URL after the web service id.  In this case, that list is {{{[hello, world]}}}.
 
 The {{{Request}}} object is provided for your convenience mainly.  The {{{Response}}} object is needed to send the XML back to the browser.
 
