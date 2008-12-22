@@ -4,12 +4,29 @@
 
 This Tapestry 5 contributed library enables services you write and define through the Tapestry 5 IoC to operate as RESTful web services.
 
-This is done by writing a Tapestry 5 services that implement the {{{RestfulWS}}} interface in this module.  You then contribute these services to this library's {{{RestfulWSDispatcher}}} service by adding a contributeRestfulWSDispatcher method to your application's T5 IoC module.
+This is done by writing a Tapestry 5 services that implement the {{{RestfulWS}}} interface in this module and then contributing those services to this library's {{{RestfulWSDispatcher}}} service by adding a contributeRestfulWSDispatcher method to your application's T5 IoC module.
+
+{{{RestfulWSDispatcher}}} adds a {{{RequestFilter}}} to Tapestry 5's pipline to trap HTTP requests intended to be serviced by the RESTful web services that you configure.
 
 
 = Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+==Install==
+
+Just drop the source jar (t5-restful-webservices.jar) into the classpath for your Tapestry 5 application.  No other configuration is necessary.  Yes, Tapestry 5 makes it that simple!
+
+==Do a little planning==
+
+You need to come up with a unique, _URL-friendly_ string id for your web service class.  The web service library will route URLs containing this id as the first URL path element (after the root context path) to be handled by your web service class' {{{serve}}} method and not pass on through to be handled by Tapestry 5's normal master dispatcher.
+
+Let's start an example.  Let's imagine that our Tapestry 5 web application is rooted at the URL {{{http://myapp.example.org/}}} -- i.e., the root context is "/" and that exact URL returns the root Index.java T5 page.  Now imagine we want a RESTful web service based at the url {{{http://myapp.example.org/foo1/}}} to take in two arguments and return some XML to the browser.  A runtime URL for that web service might then be {{{http://myapp.example.org/foo1/hello/world}}}.  Let's say we want that URL to return the following XML to the browser:
+
+{{{
+<foo>
+   <arg1>hello</arg1>
+   <arg2>world</arg2>
+</foo>
+}}}
+
+
+In this instance, "foo1" is the unique string id for our RESTful web service, and because of the way we've planned out the URL for it, you need to make sure you not going to use the URL {{{http://myapp.example.org/foo1/}}} for anything else!  The web service {{{RequestFilter}}} will be trapping all those requests!
