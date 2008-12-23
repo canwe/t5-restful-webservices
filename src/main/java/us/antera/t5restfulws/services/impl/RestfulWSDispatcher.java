@@ -21,9 +21,8 @@ public class RestfulWSDispatcher implements RequestFilter
 
     public RestfulWSDispatcher(Map<String, RestfulWS> services)
     {
-        _services = services;
+        _services = new TreeMap<String, RestfulWS>(services);
     }
-
 
     public boolean service (Request request, Response response, RequestHandler handler) throws IOException
     {
