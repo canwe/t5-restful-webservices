@@ -1,4 +1,4 @@
-#labels Featured,Phase-Implementation
+#labels Featured,Phase-Deploy
 #How to get up and running with t5-restful-webservices
 
 = Introduction =
