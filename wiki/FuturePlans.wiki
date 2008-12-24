@@ -3,10 +3,8 @@
 
 =Future Plans=
 
-Here in the alpha version 0.1, you can only define one web-enabled service method per class.  This is, of course, lame.  For the beta release, I'm planning to allow annotation-based specification of RESTful web methods.  You'll apply the annotation {{{@RestfulWebMethod}}} to one or more methods in a Tapestry 5 service to allow their access via the dispatcher.
+Here in the alpha version 0.1, you can only define one web-enabled service method per class.  This is, of course, lame.  For the beta release, I'm planning to allow multiple web methods per web service class.
 
-You contribute the service to the dispatcher as normal, and the methods can be accessed via
+You will contribute the service to the dispatcher as normal and then access the method via
 
 {{{http://myapp.example.org/id/<method-name>/arg1/arg2/...}}}
-
-Haven't decided yet how to handle overloaded methods. Suggestions?
