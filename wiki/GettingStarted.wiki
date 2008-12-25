@@ -83,4 +83,4 @@ Now start up your web server and hit
 
 {{{http://myapp.example.org/my-web-service/foo/bar/true}}}
 
-Since Tapestry's boolean ValueEncoder translates any non-empty string as a boolean true on the server side, try replacing "true" in the URL with "baz" or something.
+Since Tapestry's boolean {{{ValueEncoder}}} translates any non-empty string as a boolean true on the server side, try replacing "true" in the URL with "baz" or something.
