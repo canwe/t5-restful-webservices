@@ -6,7 +6,7 @@
     <artifactId>t5-restful-webservices</artifactId>
     <version>0.2.0</version>
     <packaging>jar</packaging>
-    <name>Tapestry 5 Simple RESTful Web Services</name>
+    <name>Simple RESTful Web Services for Tapestry 5</name>
 
 
     <properties>
