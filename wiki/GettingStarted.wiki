@@ -39,11 +39,11 @@ The public URL for a web method is {{{http://myapp.example.org/<service-unique-i
 
 {{{http://myapp.example.org/my-web-service/foo/bar/true}}}
 
-"bar" and "true" are the arguments to be passed to the foo method.  Tapestry's built-in (and contributed) {{{ValueEncoder}}}s are used to translate the string values of the HTTP request to server-side Java values.
+Tapestry's built-in (and contributed) {{{ValueEncoder}}}s are used to translate the arguments' string values to server-side Java values.
 
 ==Write your Tapestry 5 IoC Service==
 
-Implemention is easy.  We implement our Tapestry 5 IoC service as normal, providing the method "foo".  We annotate that method with {{{@RestfulWebMethod}}}, which is provided by this library.  Also, the web method must take the Tapestry {{{Request}}} and {{{Response}}} objects as its first two arguments, in that order: 
+Implemention is easy.  We implement our Tapestry 5 IoC service as normal, providing the web method "foo".  We annotate that method with {{{@RestfulWebMethod}}}.  Also, the web method must take the Tapestry {{{Request}}} and {{{Response}}} objects as its first two arguments, in that order: 
 
 {{{
 public class MyWebService
@@ -68,7 +68,7 @@ The {{{Request}}} object is provided for your convenience, and based on feedback
 
 ==Contribute your service to the RESTful web service module==
 
-In your application's IoC module, you need to contribute your service to the {{{RestfulWSDispatcher}}}.  The dispatcher takes a mapped configuration with the key for each service class being its unique id.  With our example,
+In your application's IoC module, we contribute our IoC service to the {{{RestfulWSDispatcher}}}.  The dispatcher takes a mapped configuration with the unique service id we used for the map entry's key and the service as the value.  With our example,
 
 {{{
 public void contributeRestfulWSDispatcher (MappedConfiguration<String, Object> config)
