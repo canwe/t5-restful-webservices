@@ -3,11 +3,13 @@
 
 = Introduction =
 
+*Version 0.2.0 -- major re-write*
+
 This Tapestry 5 contributed library enables IoC services you write to handle RESTful web service requests.
 
-This is done by implementing the {{{RestfulWS}}} interface in your service and then contributing your service to this library's {{{RestfulWSDispatcher}}}.
+This is done by writing methods in your service class with the {{{@RestfulWebMethod}}} annotation and using Tapestry's {{{Response}}} to render an appropriate response to the browser.  You then contribute instances of those services to this library's {{{RestfulWSDispatcher}}} service.
 
-{{{RestfulWSDispatcher}}} adds a {{{RequestFilter}}} to Tapestry 5's pipline to trap HTTP requests intended to be serviced by the RESTful web services that you configure.
+{{{RestfulWSDispatcher}}} adds a {{{RequestFilter}}} to Tapestry 5's pipline to trap HTTP requests intended to be serviced by the RESTful web methods you have written.
 
 
 = Details =
@@ -18,62 +20,55 @@ Just drop the source jar (t5-restful-webservices.jar) into the classpath for you
 
 ==Do a little planning==
 
-You need to come up with a unique, _URL-friendly_ string id for your web service class.  The web service library will route URLs containing this id as the first URL path element (after the root context path) to be handled by your web service class' {{{serve}}} method and not pass on through to be handled by Tapestry 5's normal master dispatcher.
+You need to come up with a unique, _URL-friendly_ string id for each of your web service classes.  HTTP requests that have such a unique id will be handled by a method on your service, rather than a Tapestry component or event.
 
-Let's start an example.  Let's imagine that our Tapestry 5 web application is rooted at the URL {{{http://myapp.example.org/}}} -- i.e., the root context is "/" and that exact URL returns the root Index.java T5 page.  Now imagine we want a RESTful web service based at the url {{{http://myapp.example.org/foo1/}}} to take in two arguments and return some XML to the browser.  in this case "foo1" is the unique id, and a runtime URL for that web service might then be {{{http://myapp.example.org/foo1/hello/world}}}.  Let's say we want that URL to return the following XML to the browser:
+Let's start an example.  Let's imagine that our Tapestry 5 web application is rooted at the URL {{{http://myapp.example.org/}}} -- i.e., the root context is "/" and that exact URL returns the root Index.java T5 page.
+
+Now imagine we want a RESTful web method named "foo", in a web service class named "MyWebService", to return some XML to the browser, based on a string argument and a boolean argument to that web method: 
 
 {{{
 <foo>
-   <arg1>hello</arg1>
-   <arg2>world</arg2>
+   <stringArg>bar</stringArg>
+   <booleanArg>true</booleanArg>
 </foo>
 }}}
 
+So, we need to come up with a unique string id that identifies the MyWebService class.  The simple name of the class is a compelling choice, but of course you might have the web service classes with the same simple name in different classes.  The fully-qualified is another possibility, but those can be awfully long and expose your class package structure, which you might not want to do.  Let's just use "my-web-service".
 
-In this instance, "foo1" is the unique string id for our RESTful web service, and because of the way we've planned out the URL for it, you need to make sure you not going to use the URL {{{http://myapp.example.org/foo1/}}} for anything else!  The web service {{{RequestFilter}}} will be trapping all those requests!
+The URL to use the web service is {{{http://myapp.example.org/<unique-id>/<method-name>/args...}}}.  So in this example it will be
+
+{{{http://myapp.example.org/my-web-service/foo/bar/true}}}
 
 ==Write your Tapestry 5 IoC Service==
 
-Implementing the service is easy.  Just write a class in your {{{<app-package>/services/impl}}} directory that implements the {{{RestfulWS}}} interface in this module.  That interface provides one method: {{{serve}}}.  Continuing our example, here's our {{{FooService}}} class:
+Implement is easy.  We implement a Tapestry 5 IoC service as normal, providing the method "foo".  That method must be annotated with {{{@RestfulWebMethod}}}, which is provided by this library.  Also, the web method _must_ take the Tapestry {{{Request}}} and {{{Response}}} objects as its first two arguments, in that order: 
 
 {{{
-...
-import us.antera.t5restfulws.services.RestfulWS;
 
-public class FooService implements RestfulWS
-{
-    public void serve (List<String> args, Request request, Response response)
+    @RestfulWebMethod
+    public void foo (Request request, Response response, String s, boolean b) throws IOException
     {
-        try
-        {
-            PrintWriter writer = response.getPrintWriter("text/xml");
-            writer.append("<foo>");
-            writer.append("<arg1>" + args.get(1) + "</arg1>");
-            writer.append("<arg2>" + args.get(2) + "</arg2>");
-            writer.append("</foo>");
-        }
-        catch (IOException e)
-        {
-            // Do something interesting...
-        }
+        PrintWriter writer = response.getPrintWriter("text/xml");
+        writer.append("<foo>");
+        writer.append("<stringArg>" + s + "</stringArg>");
+        writer.append("<booleanArg>" + b + "</booleanArg>");
+        writer.append("</foo>");
+        writer.flush();
+        writer.close();
     }
-}
+
+    // Other methods, restful or otherwise...
 }}}
 
-As you can guess from this example, the first argument to {{{serve}}} are the arguments to the web service; i.e., a list of the path elements in the URL after the web service id.  In this case, that list is {{{[hello, world]}}}.
-
-The {{{Request}}} and {{{Response}}} services are provided for your convenience.  You could, of course, inject those services yourself into your web service.
+The {{{Request}}} object is provided for your convenience, and based on feedback, I might eliminate it.  The {{{Response}}} object is necessary, of course, for you to render appropriate content back to the browser.
 
 ==Contribute your service to the RESTful web service module==
 
 In your application's IoC module, you need to contribute your service to the {{{RestfulWSDispatcher}}}.  The dispatcher takes a mapped configuration with the key for each service being its unique id.  With our example,
 
 {{{
-public void contributeRestfulWSDispatcher (MappedConfiguration<String, RestfulWS> config)
+public void contributeRestfulWSDispatcher (MappedConfiguration<String, Object> config)
 {
-    config.add("foo1", new FooService());
-    // contribute others!
+    config.add("my-web-service", new MyWebService());        
 }
 }}}
-
-Re
