@@ -7,7 +7,7 @@
 
 This Tapestry 5 contributed library enables IoC services you write to handle RESTful web service requests.
 
-This is done by writing methods in your service class with the {{{@RestfulWebMethod}}} annotation and using Tapestry's {{{Response}}} to render an appropriate response to the browser.  You then contribute instances of those services to this library's {{{RestfulWSDispatcher}}} service.
+This is done by writing methods in your service class with the {{{@RestfulWebMethod}}} annotation and using Tapestry's {{{Response}}} to render an appropriate response to the browser.  You contribute your service class to the {{{RestfulWSDispatcher}}} service.
 
 {{{RestfulWSDispatcher}}} adds a {{{RequestFilter}}} to Tapestry 5's pipline to trap HTTP requests intended to be serviced by the RESTful web methods you have written.
 
@@ -16,13 +16,13 @@ This is done by writing methods in your service class with the {{{@RestfulWebMet
 
 ==Install==
 
-Just drop the source jar (t5-restful-webservices.jar) into the classpath for your Tapestry 5 application.  No other configuration is necessary.  Yes, Tapestry 5 makes it that simple!
+Just drop the source jar (t5-restful-webservices-0.2.0.jar) into the classpath for your Tapestry 5 application.  No other configuration is necessary.  Yes, Tapestry 5 makes it that simple!
 
 ==Do a little planning==
 
-You need to come up with a unique, _URL-friendly_ string id for each of your web service classes.  HTTP requests that have such a unique id will be handled by a method on your service, rather than a Tapestry component or event.
+You need to come up with a unique, _URL-friendly_ string id for each of your web service classes that will contain web methods.  HTTP requests that have this unique id as the first element of the request path will be handled by a method on your service, rather than a Tapestry component or event.
 
-Let's start an example.  Let's imagine that our Tapestry 5 web application is rooted at the URL {{{http://myapp.example.org/}}} -- i.e., the root context is "/" and that exact URL returns the root Index.java T5 page.
+Let's start an example.  Let's imagine that our Tapestry 5 web application is rooted at the URL {{{http://myapp.example.org/}}} -- i.e., the root context is "/".
 
 Now imagine we want a RESTful web method named "foo", in a web service class named "MyWebService", to return some XML to the browser, based on a string argument and a boolean argument to that web method: 
 
@@ -33,15 +33,17 @@ Now imagine we want a RESTful web method named "foo", in a web service class nam
 </foo>
 }}}
 
-So, we need to come up with a unique string id that identifies the MyWebService class.  The simple name of the class is a compelling choice, but of course you might have the web service classes with the same simple name in different classes.  The fully-qualified is another possibility, but those can be awfully long and expose your class package structure, which you might not want to do.  Let's just use "my-web-service".
+We need to come up with a unique string id for the MyWebService class.  The simple name of the class is a compelling choice, but of course you might have web service classes with the same simple name in different classes.  The fully-qualified is another possibility, but those can be awfully long and expose your class package structure, which you might not want to do.  Let's just use "my-web-service".
 
-The URL to use the web service is {{{http://myapp.example.org/<unique-id>/<method-name>/args...}}}.  So in this example it will be
+The public URL for a web service and one of its web methods is {{{http://myapp.example.org/<unique-id>/<method-name>/args...}}}.  So in this example it will be
 
 {{{http://myapp.example.org/my-web-service/foo/bar/true}}}
 
+"bar" and "true" are the arguments to be passed to the foo method.  Tapestry's built-in (and contributed) {{{ValueEncoder}}}s are used to translate the string values of the HTTP request to server-side Java values.
+
 ==Write your Tapestry 5 IoC Service==
 
-Implement is easy.  We implement a Tapestry 5 IoC service as normal, providing the method "foo".  That method must be annotated with {{{@RestfulWebMethod}}}, which is provided by this library.  Also, the web method _must_ take the Tapestry {{{Request}}} and {{{Response}}} objects as its first two arguments, in that order: 
+Implemention is easy.  We implement our Tapestry 5 IoC service as normal, providing the method "foo".  That method must be annotated with {{{@RestfulWebMethod}}}, which is provided by this library.  Also, the web method _must_ take the Tapestry {{{Request}}} and {{{Response}}} objects as its first two arguments, in that order: 
 
 {{{
 
@@ -72,3 +74,11 @@ public void contributeRestfulWSDispatcher (MappedConfiguration<String, Object> c
     config.add("my-web-service", new MyWebService());        
 }
 }}}
+
+==Enjoy!==
+
+Now start up your web server and hit
+
+{{{http://myapp.example.org/my-web-service/foo/bar/true}}}
+
+Since Tapestry's boolean ValueEncoder translates any non-empty string as a boolean true on the server side, try replacing "true" in the URL with "baz" or something.
