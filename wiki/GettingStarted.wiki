@@ -20,11 +20,11 @@ Just drop the source jar (t5-restful-webservices-0.2.0.jar) into the classpath f
 
 ==Do a little planning==
 
-You need to come up with a unique, _URL-friendly_ string id for each of your web service classes that will contain web methods.  HTTP requests that have this unique id as the first element of the request path will be handled by a method on your service, rather than a Tapestry component or event.
+You need to come up with a unique, _URL-friendly_ string id for each of your web service classes that will contain web methods.  HTTP requests that have such a unique id as the first element of the request path will be handled by a method on your service, rather than a Tapestry component or event.
 
 Let's start an example.  Let's imagine that our Tapestry 5 web application is rooted at the URL {{{http://myapp.example.org/}}} -- i.e., the root context is "/".
 
-Now imagine we want a RESTful web method named "foo", in a web service class named "MyWebService", to return some XML to the browser, based on a string argument and a boolean argument to that web method: 
+Now imagine we want a RESTful web method named "foo", in a web service class named {{{MyWebService}}}.  Let's imagine that we will pass two arguments to this method -- a string and a boolean -- and then return the following XML to the browser:
 
 {{{
 <foo>
@@ -33,9 +33,9 @@ Now imagine we want a RESTful web method named "foo", in a web service class nam
 </foo>
 }}}
 
-We need to come up with a unique string id for the MyWebService class.  The simple name of the class is a compelling choice, but of course you might have web service classes with the same simple name in different classes.  The fully-qualified is another possibility, but those can be awfully long and expose your class package structure, which you might not want to do.  Let's just use "my-web-service".
+We need to come up with a unique string id for the {{{MyWebService}}} class.  The simple name of the class is a compelling choice, but of course you might have service classes with the same simple name in different classes.  The fully-qualified class name is another possibility, but those can be awfully long and expose your class package structure, which you might not want to do.  Let's just use "my-web-service".
 
-The public URL for a web service and one of its web methods is {{{http://myapp.example.org/<unique-id>/<method-name>/args...}}}.  So in this example it will be
+The public URL for a web method is {{{http://myapp.example.org/<unique-id>/<method-name>/args...}}}.  So in this example it will be
 
 {{{http://myapp.example.org/my-web-service/foo/bar/true}}}
 
@@ -43,12 +43,13 @@ The public URL for a web service and one of its web methods is {{{http://myapp.e
 
 ==Write your Tapestry 5 IoC Service==
 
-Implemention is easy.  We implement our Tapestry 5 IoC service as normal, providing the method "foo".  That method must be annotated with {{{@RestfulWebMethod}}}, which is provided by this library.  Also, the web method _must_ take the Tapestry {{{Request}}} and {{{Response}}} objects as its first two arguments, in that order: 
+Implemention is easy.  We implement our Tapestry 5 IoC service as normal, providing the method "foo".  We annotate that method with {{{@RestfulWebMethod}}}, which is provided by this library.  Also, the web method must take the Tapestry {{{Request}}} and {{{Response}}} objects as its first two arguments, in that order: 
 
 {{{
-
+public class MyWebService
+{
     @RestfulWebMethod
-    public void foo (Request request, Response response, String s, boolean b) throws IOException
+    public void foo (Request req, Response response, String s, boolean b) throws IOException
     {
         PrintWriter writer = response.getPrintWriter("text/xml");
         writer.append("<foo>");
@@ -59,14 +60,15 @@ Implemention is easy.  We implement our Tapestry 5 IoC service as normal, provid
         writer.close();
     }
 
-    // Other methods, restful or otherwise...
+    // Other methods, restful or not!...
+}
 }}}
 
 The {{{Request}}} object is provided for your convenience, and based on feedback, I might eliminate it.  The {{{Response}}} object is necessary, of course, for you to render appropriate content back to the browser.
 
 ==Contribute your service to the RESTful web service module==
 
-In your application's IoC module, you need to contribute your service to the {{{RestfulWSDispatcher}}}.  The dispatcher takes a mapped configuration with the key for each service being its unique id.  With our example,
+In your application's IoC module, you need to contribute your service to the {{{RestfulWSDispatcher}}}.  The dispatcher takes a mapped configuration with the key for each service class being its unique id.  With our example,
 
 {{{
 public void contributeRestfulWSDispatcher (MappedConfiguration<String, Object> config)
