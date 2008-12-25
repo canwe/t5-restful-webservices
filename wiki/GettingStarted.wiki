@@ -24,7 +24,7 @@ You need to come up with a unique, _URL-friendly_ string id for each of your T5 
 
 Let's start an example.  Let's imagine that our Tapestry 5 web application is rooted at the URL {{{http://myapp.example.org/}}} -- i.e., the root context is "/".
 
-Now imagine we want a RESTful web method named "foo", in a service class named {{{MyWebService}}}.  Let's imagine that we will pass two arguments to this method -- a string and a boolean -- and then return the following XML to the browser:
+Now imagine we want a RESTful web method named "foo", in a service class named {{{MyWebService}}}.  Let's imagine that we will pass two arguments to this method -- a string and a boolean ("bar" and true) -- and then return the following XML to the browser:
 
 {{{
 <foo>
