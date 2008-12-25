@@ -1,4 +1,4 @@
-package us.antera.t5restfulws.services;
+package us.antera.t5restfulws;
 
 import java.lang.annotation.*;
 
@@ -10,7 +10,7 @@ import java.lang.annotation.*;
  * To change this template use File | Settings | File Templates.
  */
 @Target(ElementType.METHOD)
-@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+@Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface RestfulWebMethod
 {
