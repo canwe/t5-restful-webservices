@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>us.antera</groupId>
     <artifactId>t5-restful-webservices</artifactId>
-    <version>0.1.1</version>
+    <version>0.2.0</version>
     <packaging>jar</packaging>
     <name>Tapestry 5 Simple RESTful Web Services</name>
 
@@ -19,6 +19,12 @@
             <groupId>org.apache.tapestry</groupId>
             <artifactId>tapestry-core</artifactId>
             <version>${tapestry-release-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.5</version>
         </dependency>
 
     </dependencies>
