@@ -20,7 +20,7 @@ Just drop the source jar (t5-restful-webservices-0.2.0.jar) into the classpath f
 
 ==Do a little planning==
 
-You need to come up with a unique, _URL-friendly_ string id for each of your web service classes that will contain web methods.  HTTP requests that have such a unique id as the first element of the request path will be handled by a method on your service, rather than a Tapestry component or event.
+You need to come up with a unique, _URL-friendly_ string id for each of your T5 IoC service classes with web methods.  HTTP requests that have such a unique id as the first element of the request path (after the root context path) will be handled by a web method on your service rather than a Tapestry component or event.
 
 Let's start an example.  Let's imagine that our Tapestry 5 web application is rooted at the URL {{{http://myapp.example.org/}}} -- i.e., the root context is "/".
 
