@@ -1,10 +1,4 @@
 #labels Phase-Design
-#Making this better
-
 =Future Plans=
 
-Here in the alpha version 0.1, you can only define one web-enabled service method per class.  This is, of course, lame.  For the beta release, I'm planning to allow multiple web methods per web service class.
-
-You will contribute the service to the dispatcher as normal and then access the method via
-
-{{{http://myapp.example.org/id/<method-name>/arg1/arg2/...}}}
+Better error reporting is coming.
