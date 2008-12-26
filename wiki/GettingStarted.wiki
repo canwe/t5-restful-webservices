@@ -5,9 +5,9 @@
 
 *Version 0.2.0 -- major re-write*
 
-This Tapestry 5 contributed library enables IoC services you write to handle RESTful web service requests.
+This Tapestry 5 contributed module allows you to expose methods on a class as RESTful web service methods.
 
-This is done by writing methods in your service class with the {{{@RestfulWebMethod}}} annotation and using Tapestry's {{{Response}}} to render an appropriate response to the browser.  You contribute your service class to the {{{RestfulWSDispatcher}}} service.
+This is done by annotating your methods with the {{{@RestfulWebMethod}}} annotation and using Tapestry's {{{Response}}} to render an appropriate response to the browser.  You contribute your class to the {{{RestfulWSDispatcher}}} service.
 
 {{{RestfulWSDispatcher}}} adds a {{{RequestFilter}}} to Tapestry 5's pipline to trap HTTP requests intended to be serviced by the RESTful web methods you have written.
 
@@ -18,13 +18,9 @@ This is done by writing methods in your service class with the {{{@RestfulWebMet
 
 Just drop the source jar (t5-restful-webservices-0.2.0.jar) into the classpath for your Tapestry 5 application.  No other configuration is necessary.  Yes, Tapestry 5 makes it that simple!
 
-==Do a little planning==
+==Usage==
 
-You need to come up with a unique, _URL-friendly_ string id for each of your T5 IoC service classes with web methods.  HTTP requests that have such a unique id as the first element of the request path (after the root context path) will be handled by a web method on your service rather than a Tapestry component or event.
-
-Let's start an example.  Let's imagine that our Tapestry 5 web application is rooted at the URL {{{http://myapp.example.org/}}} -- i.e., the root context is "/".
-
-Now imagine we want a RESTful web method named "foo", in a service class named {{{MyWebService}}}.  Let's imagine that we will pass two arguments to this method -- a string and a boolean ("bar" and true) -- and then return the following XML to the browser:
+Let's imagine we want to author a method named {{{foo}}}, accessible as a RESTful web method, that will take a string argument ("bar") and a boolean argument (true) and return the following XML to the browser: 
 
 {{{
 <foo>
@@ -33,20 +29,14 @@ Now imagine we want a RESTful web method named "foo", in a service class named {
 </foo>
 }}}
 
-We need to come up with a unique string id for the {{{MyWebService}}} class.  The simple name of the class is a compelling choice, but of course you might have service classes with the same simple name in other packages.  The fully-qualified class name is another possibility, but those can be awfully long and expose your class package structure, which you might not want to do.  Let's just use "my-web-service".
+All we need to do is write a class having {{{foo}}} as an instance method.  {{{foo}}} must
 
-The public URL for a web method is {{{http://myapp.example.org/<service-unique-id>/<method-name>/args...}}}.  So in this example it will be
-
-{{{http://myapp.example.org/my-web-service/foo/bar/true}}}
-
-Tapestry's built-in (and contributed) {{{ValueEncoder}}}s are used to translate the arguments' string values to server-side Java values.
-
-==Write your Tapestry 5 IoC Service==
-
-Implemention is easy.  We implement our Tapestry 5 IoC service as normal, providing the web method "foo".  We annotate that method with {{{@RestfulWebMethod}}}.  Also, the web method must take the Tapestry {{{Request}}} and {{{Response}}} objects as its first two arguments, in that order: 
+  * Be void return type
+  * Be annotated with the {{{@RestfulWebMethod}}} annotation (part of this module)
+  * Take the Tapestry {{{Request}}} and {{{Response}}} objects as its first two arguments, in that order
 
 {{{
-public class MyWebService
+public class AClassOfMine
 {
     @RestfulWebMethod
     public void foo (Request req, Response response, String s, boolean b) throws IOException
@@ -61,25 +51,22 @@ public class MyWebService
     }
 
     // Other methods, restful or not!...
-}
 }}}
 
-The {{{Request}}} object is provided for your convenience, and based on feedback, I might eliminate it.  The {{{Response}}} object is necessary, of course, for you to render appropriate content back to the browser.
-
-==Contribute your service to the RESTful web service module==
-
-In your application's IoC module, we contribute our IoC service to the {{{RestfulWSDispatcher}}}.  The dispatcher takes a mapped configuration with the unique service id we used for the map entry's key and the service as the value.  With our example,
+To expose our method to the web, we now contribute this class to the RestfulWSDispatcher, service using a MappedConfiguration, in your Tapestry 5 application's IoC module.  The key for the map entry must be a unique, _URL-friendly_ string
 
 {{{
 public void contributeRestfulWSDispatcher (MappedConfiguration<String, Object> config)
 {
-    config.add("my-web-service", new MyWebService());        
+    config.add("my-web-service", new AClassOfMine());        
 }
 }}}
 
-==Enjoy!==
+Now start your application and the web service is ready.  If the base URL for your Tapestry 5 web application is {{{http://myapp.example.org/}}}.  I.e., the root context path is "/", then the URL for the web service method {{{foo}}} will be
 
-Now start up your web server and hit
+{{{http://myapp.example.org/<config-key>/<lowercase-method-name>/args...}}}
+
+In the case of our example that is
 
 {{{http://myapp.example.org/my-web-service/foo/bar/true}}}
 
