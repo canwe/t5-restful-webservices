@@ -72,6 +72,6 @@ In the case of our example the URL is
 
 {{{http://myapp.example.org/my-web-service/foo/42/true}}}
 
-The web service method's arguments (42 and true) come into the {{{RestfulWSDispatcher}}} initially as pure {{{String}}}s.  The {{{RestfulWSDispatcher}}} uses the application's {{{ValueEncoder}}}s to translate them to the Java values we specified in our method signature -- an ({{{int}}} and {{{boolean}}} in our case).
+The web service method's arguments (42 and true) come into the {{{RestfulWSDispatcher}}} initially as pure strings.  The {{{RestfulWSDispatcher}}} uses the application's {{{ValueEncoder}}}s to translate them to the Java values we specified in our method signature -- an ({{{int}}} and {{{boolean}}} in our case).
 
 Since Tapestry's boolean {{{ValueEncoder}}} translates any non-empty string as a boolean true on the server side, try replacing "true" in the URL with "baz" or something.
