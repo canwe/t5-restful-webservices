@@ -20,11 +20,11 @@ Just drop the source jar (t5-restful-webservices-0.2.0.jar) into the classpath f
 
 ==Usage==
 
-Let's imagine we want to author a method named {{{foo}}}, accessible as a RESTful web method, that will take a string argument ("bar") and a boolean argument (true) and return the following XML to the browser: 
+Let's imagine we want to author a method named {{{foo}}}, accessible as a RESTful web method, that will take an integer argument (42) and a boolean argument (true) and return the following XML to the browser: 
 
 {{{
 <foo>
-   <stringArg>bar</stringArg>
+   <intArg>42</intArg>
    <booleanArg>true</booleanArg>
 </foo>
 }}}
@@ -39,11 +39,11 @@ We need write a class having {{{foo}}} as an instance method.  {{{foo}}} must
 public class AClassOfMine
 {
     @RestfulWebMethod
-    public void foo (Request request, Response response, String s, boolean b) throws IOException
+    public void foo (Request request, Response response, int n, boolean b) throws IOException
     {
         PrintWriter writer = response.getPrintWriter("text/xml");
         writer.append("<foo>");
-        writer.append("<stringArg>" + s + "</stringArg>");
+        writer.append("<intArg>" + n + "</intArg>");
         writer.append("<booleanArg>" + b + "</booleanArg>");
         writer.append("</foo>");
         writer.flush();
@@ -55,7 +55,7 @@ public class AClassOfMine
 
 The {{{Request}}} object is provided as a convenience should we need it.  The {{{Response}}} object is necessary to send a response to the browser.
 
-To expose our method to the web, we now contribute this class to the {{{RestfulWSDispatcher}}} service, using a {{{MappedConfiguration}}}, in our Tapestry 5 application's IoC module.  The key for the map entry must be a, _URL-friendly_ string.  It must also be unique among other web service class map keys:
+To expose our method to the web, we now contribute this class to the {{{RestfulWSDispatcher}}} service, using a {{{MappedConfiguration}}}, in our Tapestry 5 application's IoC module.  The key for the class' map entry must be a, _URL-friendly_ string (unique among other web service class map keys of course :)
 
 {{{
 public void contributeRestfulWSDispatcher (MappedConfiguration<String, Object> config)
@@ -66,12 +66,12 @@ public void contributeRestfulWSDispatcher (MappedConfiguration<String, Object> c
 
 When we start our application, the web service is ready.  If the base URL for our Tapestry 5 web application is {{{http://myapp.example.org/}}} (i.e., the root context path is "/") then the URL for our web service method is
 
-{{{http://myapp.example.org/<service-map-key>/<lowercase-method-name>/args...}}}
+{{{http://myapp.example.org/<class-map-key>/<lowercase-method-name>/args...}}}
 
 In the case of our example the URL is
 
-{{{http://myapp.example.org/my-web-service/foo/bar/true}}}
+{{{http://myapp.example.org/my-web-service/foo/42/true}}}
 
-The {{{RestfulWSDispatcher}}} uses the application's {{{ValueEncoder}}}s to translate between string arguments of the URL's request-path and the server-side Java values (the {{{String}}} and {{{boolean}}} in our case).
+The web service method's arguments (42 and true) come into the {{{RestfulWSDispatcher}}} initially as pure {{{String}}}s.  The {{{RestfulWSDispatcher}}} uses the application's {{{ValueEncoder}}}s to translate them to the Java values we specified in our method signature -- an ({{{int}}} and {{{boolean}}} in our case).
 
 Since Tapestry's boolean {{{ValueEncoder}}} translates any non-empty string as a boolean true on the server side, try replacing "true" in the URL with "baz" or something.
