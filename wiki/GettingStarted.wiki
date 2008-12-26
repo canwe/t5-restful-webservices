@@ -64,7 +64,7 @@ public void contributeRestfulWSDispatcher (MappedConfiguration<String, Object> c
 }
 }}}
 
-When we start our application, the web service is ready.  If the base URL for our Tapestry 5 web application is {{{http://myapp.example.org/}}} (i.e., the root context path is "/") then the URL for our web service method {{{foo}}} is
+When we start our application, the web service is ready.  If the base URL for our Tapestry 5 web application is {{{http://myapp.example.org/}}} (i.e., the root context path is "/") then the URL for our web service method is
 
 {{{http://myapp.example.org/<service-map-key>/<lowercase-method-name>/args...}}}
 
