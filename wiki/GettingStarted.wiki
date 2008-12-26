@@ -72,6 +72,6 @@ In the case of our example the URL is
 
 {{{http://myapp.example.org/my-web-service/foo/bar/true}}}
 
-The {{{RestfulWSDispatcher}}} uses the application's {{{ValueEncoder}}}s to translate between strings in the request-path parameters and the server-side Java values (the {{{String}}} and {{{boolean}}} in our case).
+The {{{RestfulWSDispatcher}}} uses the application's {{{ValueEncoder}}}s to translate between string arguments of the URL's request-path and the server-side Java values (the {{{String}}} and {{{boolean}}} in our case).
 
 Since Tapestry's boolean {{{ValueEncoder}}} translates any non-empty string as a boolean true on the server side, try replacing "true" in the URL with "baz" or something.
