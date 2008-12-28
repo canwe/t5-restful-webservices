@@ -1,3 +1,16 @@
+/*
+ THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL ANTERA
+ CONSULTING, OR ANY CONTRIBUTORS TO THIS SOFTWARE, BE LIABLE FOR ANY DIRECT,
+ INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+ OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+ OF SUCH DAMAGE.
+ */
+
 package us.antera.t5restfulws.services.impl;
 
 import org.apache.tapestry5.services.*;
@@ -15,8 +28,6 @@ import us.antera.t5restfulws.RestfulWebMethod;
  * User: holloway
  * Date: Dec 21, 2008
  * Time: 12:39:53 AM
- *
- * 
  */
 public class RestfulWSDispatcher <T> implements RequestFilter
 {
@@ -102,10 +113,17 @@ public class RestfulWSDispatcher <T> implements RequestFilter
     {
         Object service = _services.get(serviceId);
         Map<String, Method> methodMap = _methodMap.get(serviceId);
+
         if (methodMap == null)
-            throw new RuntimeException("There are no methods on service " + serviceId);
+            throw new RuntimeException("There are no RESTful web service methods on the " +
+                    "class with web service id " + serviceId);
 
         Method webMethod = methodMap.get(methodName);
+
+        if (webMethod == null)
+            throw new RuntimeException("There is no RESTful web service method \"" +
+                    methodName + "\" on the class with web service id " + serviceId);
+
         Class[] mparams = webMethod.getParameterTypes();
         validateParams (serviceId, methodName, webMethod);
         encodeArgs (mparams, args);
@@ -136,6 +154,10 @@ public class RestfulWSDispatcher <T> implements RequestFilter
     private void encodeArgs (Class<?>[] paramClasses, LinkedList<Object> args)
     {
         if (args.size() < 3) return;
+
+        // The first two args are the Request and Response objects from
+        // Tapestry.  We're skipping those for encoding purposes, so we start
+        // the list iteration at the third item.
         for (int j = 2; j < args.size(); j++)
         {
             Class<?> paramClass = paramClasses[j];
