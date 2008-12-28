@@ -1,6 +1,8 @@
-#summary One-sentence summary of this page.
 #labels Phase-Design
-
 =Version 0.1.1=
 
 Now using a {{{java.util.TreeMap}}} to lookup RESTful web services by unique id string.
+
+=Version 0.2.1=
+
+Some improvements in error reporting.
