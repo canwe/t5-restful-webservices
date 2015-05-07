@@ -1,0 +1,1 @@
+This library allows a user-defined Tapestry 5 service to act as a RESTful web service.
